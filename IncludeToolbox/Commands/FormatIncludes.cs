@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using Microsoft.VisualStudio.Shell;
@@ -55,6 +55,7 @@ namespace IncludeToolbox.Commands
         /// <param name="e">Event args.</param>
         protected override void MenuItemCallback(object sender, EventArgs e)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var settings = (FormatterOptionsPage)Package.GetDialogPage(typeof(FormatterOptionsPage));
 
             // Try to find absolute paths

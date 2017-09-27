@@ -19,7 +19,6 @@
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="VCProjectUtils.Base" Path="|VCProjectUtils.Base|" AssemblyName="|VCProjectUtils.Base;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="VCProjectUtils.VS14" Path="|VCProjectUtils.VS14|" AssemblyName="|VCProjectUtils.VS14;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="VCProjectUtils.VS15" Path="|VCProjectUtils.VS15|" AssemblyName="|VCProjectUtils.VS15;AssemblyName|" />
     </Assets>
     <Prerequisites>

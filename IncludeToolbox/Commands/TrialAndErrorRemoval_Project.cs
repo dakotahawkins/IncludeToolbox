@@ -1,4 +1,4 @@
-﻿using EnvDTE;
+using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -105,6 +105,7 @@ namespace IncludeToolbox.Commands
 
         static void RecursiveFindFilesInProject(ProjectItems items, ref Queue<ProjectItem> projectFiles)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var e = items.GetEnumerator();
             while (e.MoveNext())
             {
@@ -134,6 +135,7 @@ namespace IncludeToolbox.Commands
 
         private void PerformTrialAndErrorRemoval(Project project)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             projectItems = project.ProjectItems;
 
             projectFiles.Clear();
@@ -162,6 +164,7 @@ namespace IncludeToolbox.Commands
         /// <param name="e">Event args.</param>
         protected override void MenuItemCallback(object sender, EventArgs e)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (TrialAndErrorRemoval.WorkInProgress)
             {
                 Output.Instance.ErrorMsg("Trial and error include removal already in progress!");
