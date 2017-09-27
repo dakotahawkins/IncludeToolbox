@@ -20,6 +20,7 @@ namespace IncludeToolbox
             Shortest,
             Shortest_AvoidUpSteps,
             Absolute,
+            ForceRelativeToParentDirWithFile
         }
         [Category("Path")]
         [DisplayName("Mode")]
@@ -27,9 +28,21 @@ namespace IncludeToolbox
         public PathMode PathFormat { get; set; } = PathMode.Shortest_AvoidUpSteps;
 
         [Category("Path")]
-        [DisplayName("Ignore File Relative")]
-        [Description("If true, include directives will not take the path of the file into account.")]
-        public bool IgnoreFileRelative { get; set; } = false;
+        [DisplayName("Filename for ForceRelativeToParentDirWithFile mode")]
+        [Description("The ForceRelativeToParentDirWithFile mode will look for this file in all parent directories and make include paths relative to its location if found")]
+        public string FromParentDirWithFile { get; set; } = "build.root";
+
+        public enum UseFileRelativePathMode
+        {
+            Always,                     // Always use including file's directory first to try to resolve include paths
+            Never,                      // Never use including file's directory to try to resolve include paths
+            OnlyInSameDirectory,        // Paths relative to the including file are only used if they resolve to the directory containing the including file (not including subdirectories)
+            OnlyInSameOrSubDirectory    // Paths relative to the including file are only used if they resolve to the directory containing the including file (including subdirectories)
+        }
+        [Category("Path")]
+        [DisplayName("Use File Relative Paths")]
+        [Description("Whether and when to use include paths relative to the current file.")]
+        public UseFileRelativePathMode UseFileRelativePath { get; set; } = UseFileRelativePathMode.Always;
 
         //[Category("Path")]
         //[DisplayName("Ignore Standard Library")]
@@ -117,7 +130,8 @@ namespace IncludeToolbox
                 settingsStore.CreateCollection(collectionName);
 
             settingsStore.SetInt32(collectionName, nameof(PathFormat), (int)PathFormat);
-            settingsStore.SetBoolean(collectionName, nameof(IgnoreFileRelative), IgnoreFileRelative);
+            settingsStore.SetString(collectionName, nameof(FromParentDirWithFile), FromParentDirWithFile);
+            settingsStore.SetInt32(collectionName, nameof(UseFileRelativePath), (int)UseFileRelativePath);
 
             settingsStore.SetInt32(collectionName, nameof(DelimiterFormatting), (int)DelimiterFormatting);
             settingsStore.SetInt32(collectionName, nameof(SlashFormatting), (int)SlashFormatting);
@@ -138,8 +152,10 @@ namespace IncludeToolbox
 
             if (settingsStore.PropertyExists(collectionName, nameof(PathFormat)))
                 PathFormat = (PathMode)settingsStore.GetInt32(collectionName, nameof(PathFormat));
-            if (settingsStore.PropertyExists(collectionName, nameof(IgnoreFileRelative)))
-                IgnoreFileRelative = settingsStore.GetBoolean(collectionName, nameof(IgnoreFileRelative));
+            if (settingsStore.PropertyExists(collectionName, nameof(FromParentDirWithFile)))
+                FromParentDirWithFile = settingsStore.GetString(collectionName, nameof(FromParentDirWithFile));
+            if (settingsStore.PropertyExists(collectionName, nameof(UseFileRelativePath)))
+                UseFileRelativePath = (UseFileRelativePathMode)settingsStore.GetInt32(collectionName, nameof(UseFileRelativePath));
 
             if (settingsStore.PropertyExists(collectionName, nameof(DelimiterFormatting)))
                 DelimiterFormatting = (DelimiterMode) settingsStore.GetInt32(collectionName, nameof(DelimiterFormatting));

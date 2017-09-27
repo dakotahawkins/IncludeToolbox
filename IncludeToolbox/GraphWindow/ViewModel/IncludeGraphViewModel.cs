@@ -1,4 +1,4 @@
-﻿using IncludeToolbox.Formatter;
+using IncludeToolbox.Formatter;
 using IncludeToolbox.Graph;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
@@ -220,7 +220,13 @@ namespace IncludeToolbox.GraphWindow
                 includeDirectories.Insert(0, PathUtil.Normalize(documentTreeComputedFor.Path) + Path.DirectorySeparatorChar);
 
                 foreach (var item in Graph.GraphItems)
-                    item.FormattedName = IncludeFormatter.FormatPath(item.AbsoluteFilename, FormatterOptionsPage.PathMode.Shortest_AvoidUpSteps, includeDirectories);
+                    item.FormattedName = IncludeFormatter.FormatPath(
+                        item.AbsoluteFilename,
+                        FormatterOptionsPage.PathMode.Shortest_AvoidUpSteps,
+                        FormatterOptionsPage.UseFileRelativePathMode.Always,
+                        includeDirectories,
+                        Utils.GetExactPathName(documentTreeComputedFor.Path)
+                    );
 
                 ResetIncludeTreeModel(Graph.CreateOrGetItem(documentTreeComputedFor.FullName, out _));
             }
