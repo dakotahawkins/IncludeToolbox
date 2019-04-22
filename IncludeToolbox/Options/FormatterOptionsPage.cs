@@ -25,7 +25,7 @@ namespace IncludeToolbox
         [Category("Path")]
         [DisplayName("Mode")]
         [Description("Changes the path mode to the given pattern.")]
-        public PathMode PathFormat { get; set; } = PathMode.Shortest_AvoidUpSteps;
+        public PathMode PathFormat { get; set; } = PathMode.ForceRelativeToParentDirWithFile;
 
         [Category("Path")]
         [DisplayName("Filename for ForceRelativeToParentDirWithFile mode")]
@@ -42,7 +42,7 @@ namespace IncludeToolbox
         [Category("Path")]
         [DisplayName("Use File Relative Paths")]
         [Description("Whether and when to use include paths relative to the current file.")]
-        public UseFileRelativePathMode UseFileRelativePath { get; set; } = UseFileRelativePathMode.Always;
+        public UseFileRelativePathMode UseFileRelativePath { get; set; } = UseFileRelativePathMode.OnlyInSameOrSubDirectory;
 
         //[Category("Path")]
         //[DisplayName("Ignore Standard Library")]
@@ -87,12 +87,12 @@ namespace IncludeToolbox
         [Category("Sorting")]
         [DisplayName("Include delimiters in precedence regexes")]
         [Description("If true, precedence regexes will consider delimiters (angle brackets or quotes.)")]
-        public bool RegexIncludeDelimiter { get; set; } = false;
+        public bool RegexIncludeDelimiter { get; set; } = true;
 
         [Category("Sorting")]
         [DisplayName("Insert blank line between precedence regex match groups")]
         [Description("If true, a blank line will be inserted after each group matching one of the precedence regexes.")]
-        public bool BlankAfterRegexGroupMatch { get; set; } = false;
+        public bool BlankAfterRegexGroupMatch { get; set; } = true;
 
         [Category("Sorting")]
         [DisplayName("Precedence Regexes")]
@@ -101,7 +101,15 @@ namespace IncludeToolbox
             get { return precedenceRegexes; }
             set { precedenceRegexes = value.Where(x => x.Length > 0).ToArray(); } // Remove empty lines.
         }
-        private string[] precedenceRegexes = new string[] { $"(?i){RegexUtils.CurrentFileNameKey}\\.(h|hpp|hxx|inl|c|cpp|cxx)(?-i)" };
+        private string[] precedenceRegexes = new string[] {
+            "(?i)stdafx\\.h(?-i)",
+            $"\"(?i){RegexUtils.CurrentFileNameKey}\\.(h|hpp|hxx)(?-i)\"",
+            "\"[^\\/]+\"",
+            "\"[^.\\/]+(\\\\|/)",
+            "<[^.\\/]+(\\\\|/)",
+            "<[^\\/]+\\.[^.\\/]+>",
+            "<[^.\\/]+>"
+        };
 
         public enum TypeSorting
         {
@@ -112,7 +120,7 @@ namespace IncludeToolbox
         [Category("Sorting")]
         [DisplayName("Sort by Include Type")]
         [Description("Optionally put either includes with angle brackets <...> or quotes \"...\" first.")]
-        public TypeSorting SortByType { get; set; } = TypeSorting.QuotedFirst;
+        public TypeSorting SortByType { get; set; } = TypeSorting.None;
 
         [Category("Sorting")]
         [DisplayName("Remove duplicates")]

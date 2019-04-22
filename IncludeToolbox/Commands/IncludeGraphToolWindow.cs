@@ -32,7 +32,6 @@ namespace IncludeToolbox.Commands
             }
             else
             {
-                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
                 windowFrame.SetProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, GraphWindow.IncludeGraphToolWindow.GUIDString);
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
