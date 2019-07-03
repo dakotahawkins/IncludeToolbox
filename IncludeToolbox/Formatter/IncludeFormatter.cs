@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -75,6 +75,7 @@ namespace IncludeToolbox.Formatter
         private static void FormatPaths(IEnumerable<IncludeLineInfo> lines,
                                         FormatterOptionsPage.PathMode pathFormat,
                                         FormatterOptionsPage.UseFileRelativePathMode useFileRelativePathMode,
+                                        IEnumerable<string> systemIncludeDirectories,
                                         IEnumerable<string> includeDirectories,
                                         string documentDir,
                                         string includeRootDirectory = null)
@@ -88,7 +89,7 @@ namespace IncludeToolbox.Formatter
                 bool resolvedPathAsFileRelative = false;
                 {
                     string fileRelativeAbsoluteIncludePath =
-                        line.TryResolveInclude(new string[] { documentDir }, out resolvedPathAsFileRelative);
+                        line.TryResolveInclude(new string[] { documentDir }, true, out resolvedPathAsFileRelative);
                     if (resolvedPathAsFileRelative)
                     {
                         absoluteIncludePath = fileRelativeAbsoluteIncludePath;
@@ -96,7 +97,7 @@ namespace IncludeToolbox.Formatter
                     else
                     {
                         string includeDirAbsoluteIncludePath =
-                            line.TryResolveInclude(includeDirectories, out bool resolvedPath);
+                            line.TryResolveInclude(includeDirectories, false, out bool resolvedPath);
                         if (resolvedPath)
                         {
                             absoluteIncludePath = includeDirAbsoluteIncludePath;
@@ -310,8 +311,13 @@ namespace IncludeToolbox.Formatter
         /// <param name="includeDirectories">A list of include directories</param>
         /// <param name="settings">Settings that determine how the formating should be done.</param>
         /// <returns>Formated text.</returns>
-        public static string FormatIncludes(string text, string documentPath, IEnumerable<string> includeDirectories, FormatterOptionsPage settings)
-        {
+        public static string FormatIncludes(
+            string text,
+            string documentPath,
+            IEnumerable<string> systemIncludeDirectories,
+            IEnumerable<string> includeDirectories,
+            FormatterOptionsPage settings
+        ){
             string documentDir = Utils.GetExactPathName(Path.GetDirectoryName(documentPath));
             string documentName = Path.GetFileNameWithoutExtension(documentPath);
             string includeRootDirectory = null;
@@ -347,6 +353,7 @@ namespace IncludeToolbox.Formatter
             FormatPaths(lines,
                         settings.PathFormat,
                         settings.UseFileRelativePath,
+                        systemIncludeDirectories,
                         includeDirectories,
                         documentDir,
                         includeRootDirectory);

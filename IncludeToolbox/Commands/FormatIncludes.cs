@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using Microsoft.VisualStudio.Shell;
@@ -68,14 +68,21 @@ namespace IncludeToolbox.Commands
                 Output.Instance.WriteLine("The document '{0}' is not part of a project.", document.Name);
                 return;
             }
-            var includeDirectories = VSUtils.GetProjectIncludeDirectories(project);
+            var systemIncludeDirectories = VSUtils.GetProjectIncludeDirectories(project, true);
+            var includeDirectories = VSUtils.GetProjectIncludeDirectories(project, false);
 
             // Read.
             var viewHost = VSUtils.GetCurrentTextViewHost();
             var selectionSpan = GetSelectionSpan(viewHost);
 
             // Format
-            string formatedText = Formatter.IncludeFormatter.FormatIncludes(selectionSpan.GetText(), document.FullName, includeDirectories, settings);
+            string formatedText = Formatter.IncludeFormatter.FormatIncludes(
+                selectionSpan.GetText(),
+                document.FullName,
+                systemIncludeDirectories,
+                includeDirectories,
+                settings
+            );
 
             // Overwrite.
             using (var edit = viewHost.TextView.TextBuffer.CreateEdit())

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -15,9 +15,10 @@ namespace IncludeToolbox
     [ProvideMenuResource("Menus.ctmenu", 1)]
 
     [ProvideOptionPage(typeof(FormatterOptionsPage), Options.Constants.Category, FormatterOptionsPage.SubCategory, 1000, 1001, true)]
-    [ProvideOptionPage(typeof(IncludeWhatYouUseOptionsPage), Options.Constants.Category, IncludeWhatYouUseOptionsPage.SubCategory, 1000, 1002, true)]
-    [ProvideOptionPage(typeof(TrialAndErrorRemovalOptionsPage), Options.Constants.Category, TrialAndErrorRemovalOptionsPage.SubCategory, 1000, 1003, true)]
-    [ProvideOptionPage(typeof(ViewerOptionsPage), Options.Constants.Category, ViewerOptionsPage.SubCategory, 1000, 1004, true)]
+    [ProvideOptionPage(typeof(IncludeTypeOptionsPage), Options.Constants.Category, IncludeTypeOptionsPage.SubCategory, 1000, 1002, true)]
+    [ProvideOptionPage(typeof(IncludeWhatYouUseOptionsPage), Options.Constants.Category, IncludeWhatYouUseOptionsPage.SubCategory, 1000, 1003, true)]
+    [ProvideOptionPage(typeof(TrialAndErrorRemovalOptionsPage), Options.Constants.Category, TrialAndErrorRemovalOptionsPage.SubCategory, 1000, 1004, true)]
+    [ProvideOptionPage(typeof(ViewerOptionsPage), Options.Constants.Category, ViewerOptionsPage.SubCategory, 1000, 1005, true)]
 
     [ProvideToolWindow(typeof(GraphWindow.IncludeGraphToolWindow))]
     [Guid(IncludeToolboxPackage.PackageGuidString)]

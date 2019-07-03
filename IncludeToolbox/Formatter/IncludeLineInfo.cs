@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -224,12 +224,17 @@ namespace IncludeToolbox.Formatter
             }
         }
 
+        public string TryResolveInclude(IEnumerable<string> includeDirectories, out bool success)
+        {
+            return TryResolveInclude(includeDirectories, false, out success);
+        }
+
         /// <summary>
         /// Tries to resolve the include (if any) using a list of directories.
         /// </summary>
         /// <param name="includeDirectories">Include directories. Keep in mind that IncludeLineInfo does not know the path of the file this include is from.</param>
         /// <returns>Empty string if this is not an include, absolute include path if possible or raw include if not.</returns>
-        public string TryResolveInclude(IEnumerable<string> includeDirectories, out bool success)
+        public string TryResolveInclude(IEnumerable<string> includeDirectories, bool quiet, out bool success)
         {
             if (!ContainsActiveInclude)
             {
@@ -249,7 +254,8 @@ namespace IncludeToolbox.Formatter
                 }
             }
 
-            Output.Instance.WriteLine("Unable to resolve include: '{0}'", includeContent);
+            if (!quiet)
+                Output.Instance.WriteLine("Unable to resolve include: '{0}'", includeContent);
             success = false;
             return includeContent;
         }

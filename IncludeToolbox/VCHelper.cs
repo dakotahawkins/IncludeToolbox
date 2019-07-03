@@ -1,4 +1,4 @@
-﻿using EnvDTE;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System.Threading.Tasks;
@@ -120,14 +120,24 @@ namespace IncludeToolbox
                 fileConfig.Compile(true, false); // WaitOnBuild==true always fails.
         }
 
+        public string GetProjectSetting_Includes(Project project)
+        {
+            VCProject vcProject = project?.Object as VCProject;
+            if (vcProject == null)
+                throw new VCQueryFailure("Failed to retrieve project includes since project is not a VCProject.");
+            return vcProject.ActiveConfiguration.GetEvaluatedPropertyValue("IncludePath");
+        }
+
         public string GetCompilerSetting_Includes(Project project)
         {
             VCQueryFailure queryFailure;
             try
             {
-                VCCLCompilerTool compilerTool = GetToolFromActiveConfiguration<VCCLCompilerTool>(project);
-                if (compilerTool != null)
-                    return compilerTool.FullIncludePath;
+                IVCRulePropertyStorage propertyStorage = GetToolFromActiveConfiguration<VCCLCompilerTool>(project) as IVCRulePropertyStorage;
+                if (propertyStorage != null)
+                {
+                    return propertyStorage.GetEvaluatedPropertyValue("AdditionalIncludeDirectories");
+                }
                 else
                     queryFailure = new VCQueryFailure("Unhandled error");
             }

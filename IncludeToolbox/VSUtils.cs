@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -70,12 +70,18 @@ namespace IncludeToolbox
                 throw new NotImplementedException("Unknown MSVC version!");
         }
 
+        public static List<string> GetProjectIncludeDirectories(EnvDTE.Project project, bool endWithSeparator = true)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return GetProjectIncludeDirectories(project, false, endWithSeparator);
+        }
+
         /// <summary>
         /// Tries to retrieve include directories from a project.
         /// For each encountered path it will try to resolve the paths to absolute paths.
         /// </summary>
         /// <returns>Empty list if include directory retrieval failed.</returns>
-        public static List<string> GetProjectIncludeDirectories(EnvDTE.Project project, bool endWithSeparator = true)
+        public static List<string> GetProjectIncludeDirectories(EnvDTE.Project project, bool system, bool endWithSeparator = true)
         {
             List<string> pathStrings = new List<string>();
             if (project == null)
@@ -84,7 +90,10 @@ namespace IncludeToolbox
             string projectIncludeDirectories;
             try
             {
-                projectIncludeDirectories = VCUtils.GetCompilerSetting_Includes(project);
+                if (system)
+                    projectIncludeDirectories = VCUtils.GetProjectSetting_Includes(project);
+                else
+                    projectIncludeDirectories = VCUtils.GetCompilerSetting_Includes(project);
             }
             catch (VCQueryFailure e)
             {

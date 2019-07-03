@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace IncludeToolbox
     public class FormatterOptionsPage : OptionsPage
     {
         public const string SubCategory = "Include Formatter";
-        private const string collectionName = "IncludeFormatter";
+        public const string CollectionName = "IncludeFormatter";
 
         #region Path
 
@@ -42,7 +42,7 @@ namespace IncludeToolbox
         [Category("Path")]
         [DisplayName("Use File Relative Paths")]
         [Description("Whether and when to use include paths relative to the current file.")]
-        public UseFileRelativePathMode UseFileRelativePath { get; set; } = UseFileRelativePathMode.OnlyInSameOrSubDirectory;
+        public UseFileRelativePathMode UseFileRelativePath { get; set; } = UseFileRelativePathMode.Never;
 
         //[Category("Path")]
         //[DisplayName("Ignore Standard Library")]
@@ -134,23 +134,23 @@ namespace IncludeToolbox
             ThreadHelper.ThrowIfNotOnUIThread();
             var settingsStore = GetSettingsStore();
 
-            if (!settingsStore.CollectionExists(collectionName))
-                settingsStore.CreateCollection(collectionName);
+            if (!settingsStore.CollectionExists(CollectionName))
+                settingsStore.CreateCollection(CollectionName);
 
-            settingsStore.SetInt32(collectionName, nameof(PathFormat), (int)PathFormat);
-            settingsStore.SetString(collectionName, nameof(FromParentDirWithFile), FromParentDirWithFile);
-            settingsStore.SetInt32(collectionName, nameof(UseFileRelativePath), (int)UseFileRelativePath);
+            settingsStore.SetInt32(CollectionName, nameof(PathFormat), (int)PathFormat);
+            settingsStore.SetString(CollectionName, nameof(FromParentDirWithFile), FromParentDirWithFile);
+            settingsStore.SetInt32(CollectionName, nameof(UseFileRelativePath), (int)UseFileRelativePath);
 
-            settingsStore.SetInt32(collectionName, nameof(DelimiterFormatting), (int)DelimiterFormatting);
-            settingsStore.SetInt32(collectionName, nameof(SlashFormatting), (int)SlashFormatting);
-            settingsStore.SetBoolean(collectionName, nameof(RemoveEmptyLines), RemoveEmptyLines);
+            settingsStore.SetInt32(CollectionName, nameof(DelimiterFormatting), (int)DelimiterFormatting);
+            settingsStore.SetInt32(CollectionName, nameof(SlashFormatting), (int)SlashFormatting);
+            settingsStore.SetBoolean(CollectionName, nameof(RemoveEmptyLines), RemoveEmptyLines);
 
-            settingsStore.SetBoolean(collectionName, nameof(RegexIncludeDelimiter), RegexIncludeDelimiter);
-            settingsStore.SetBoolean(collectionName, nameof(BlankAfterRegexGroupMatch), BlankAfterRegexGroupMatch);
+            settingsStore.SetBoolean(CollectionName, nameof(RegexIncludeDelimiter), RegexIncludeDelimiter);
+            settingsStore.SetBoolean(CollectionName, nameof(BlankAfterRegexGroupMatch), BlankAfterRegexGroupMatch);
             var value = string.Join("\n", PrecedenceRegexes);
-            settingsStore.SetString(collectionName, nameof(PrecedenceRegexes), value);
-            settingsStore.SetInt32(collectionName, nameof(SortByType), (int)SortByType);
-            settingsStore.SetBoolean(collectionName, nameof(RemoveDuplicates), RemoveDuplicates);
+            settingsStore.SetString(CollectionName, nameof(PrecedenceRegexes), value);
+            settingsStore.SetInt32(CollectionName, nameof(SortByType), (int)SortByType);
+            settingsStore.SetBoolean(CollectionName, nameof(RemoveDuplicates), RemoveDuplicates);
         }
 
         public override void LoadSettingsFromStorage()
@@ -158,33 +158,33 @@ namespace IncludeToolbox
             ThreadHelper.ThrowIfNotOnUIThread();
             var settingsStore = GetSettingsStore();
 
-            if (settingsStore.PropertyExists(collectionName, nameof(PathFormat)))
-                PathFormat = (PathMode)settingsStore.GetInt32(collectionName, nameof(PathFormat));
-            if (settingsStore.PropertyExists(collectionName, nameof(FromParentDirWithFile)))
-                FromParentDirWithFile = settingsStore.GetString(collectionName, nameof(FromParentDirWithFile));
-            if (settingsStore.PropertyExists(collectionName, nameof(UseFileRelativePath)))
-                UseFileRelativePath = (UseFileRelativePathMode)settingsStore.GetInt32(collectionName, nameof(UseFileRelativePath));
+            if (settingsStore.PropertyExists(CollectionName, nameof(PathFormat)))
+                PathFormat = (PathMode)settingsStore.GetInt32(CollectionName, nameof(PathFormat));
+            if (settingsStore.PropertyExists(CollectionName, nameof(FromParentDirWithFile)))
+                FromParentDirWithFile = settingsStore.GetString(CollectionName, nameof(FromParentDirWithFile));
+            if (settingsStore.PropertyExists(CollectionName, nameof(UseFileRelativePath)))
+                UseFileRelativePath = (UseFileRelativePathMode)settingsStore.GetInt32(CollectionName, nameof(UseFileRelativePath));
 
-            if (settingsStore.PropertyExists(collectionName, nameof(DelimiterFormatting)))
-                DelimiterFormatting = (DelimiterMode) settingsStore.GetInt32(collectionName, nameof(DelimiterFormatting));
-            if (settingsStore.PropertyExists(collectionName, nameof(SlashFormatting)))
-                SlashFormatting = (SlashMode) settingsStore.GetInt32(collectionName, nameof(SlashFormatting));
-            if (settingsStore.PropertyExists(collectionName, nameof(RemoveEmptyLines)))
-                RemoveEmptyLines = settingsStore.GetBoolean(collectionName, nameof(RemoveEmptyLines));
+            if (settingsStore.PropertyExists(CollectionName, nameof(DelimiterFormatting)))
+                DelimiterFormatting = (DelimiterMode) settingsStore.GetInt32(CollectionName, nameof(DelimiterFormatting));
+            if (settingsStore.PropertyExists(CollectionName, nameof(SlashFormatting)))
+                SlashFormatting = (SlashMode) settingsStore.GetInt32(CollectionName, nameof(SlashFormatting));
+            if (settingsStore.PropertyExists(CollectionName, nameof(RemoveEmptyLines)))
+                RemoveEmptyLines = settingsStore.GetBoolean(CollectionName, nameof(RemoveEmptyLines));
 
-            if (settingsStore.PropertyExists(collectionName, nameof(RegexIncludeDelimiter)))
-                RegexIncludeDelimiter = settingsStore.GetBoolean(collectionName, nameof(RegexIncludeDelimiter));
-            if (settingsStore.PropertyExists(collectionName, nameof(BlankAfterRegexGroupMatch)))
-                BlankAfterRegexGroupMatch = settingsStore.GetBoolean(collectionName, nameof(BlankAfterRegexGroupMatch));
-            if (settingsStore.PropertyExists(collectionName, nameof(PrecedenceRegexes)))
+            if (settingsStore.PropertyExists(CollectionName, nameof(RegexIncludeDelimiter)))
+                RegexIncludeDelimiter = settingsStore.GetBoolean(CollectionName, nameof(RegexIncludeDelimiter));
+            if (settingsStore.PropertyExists(CollectionName, nameof(BlankAfterRegexGroupMatch)))
+                BlankAfterRegexGroupMatch = settingsStore.GetBoolean(CollectionName, nameof(BlankAfterRegexGroupMatch));
+            if (settingsStore.PropertyExists(CollectionName, nameof(PrecedenceRegexes)))
             {
-                var value = settingsStore.GetString(collectionName, nameof(PrecedenceRegexes));
+                var value = settingsStore.GetString(CollectionName, nameof(PrecedenceRegexes));
                 PrecedenceRegexes = value.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
-            if (settingsStore.PropertyExists(collectionName, nameof(SortByType)))
-                SortByType = (TypeSorting) settingsStore.GetInt32(collectionName, nameof(SortByType));
-            if (settingsStore.PropertyExists(collectionName, nameof(RemoveDuplicates)))
-                RemoveDuplicates = settingsStore.GetBoolean(collectionName, nameof(RemoveDuplicates));
+            if (settingsStore.PropertyExists(CollectionName, nameof(SortByType)))
+                SortByType = (TypeSorting) settingsStore.GetInt32(CollectionName, nameof(SortByType));
+            if (settingsStore.PropertyExists(CollectionName, nameof(RemoveDuplicates)))
+                RemoveDuplicates = settingsStore.GetBoolean(CollectionName, nameof(RemoveDuplicates));
         }
     }
 }

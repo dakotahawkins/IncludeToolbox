@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -173,8 +173,15 @@ namespace IncludeToolbox.IncludeWhatYouUse
                         // optional, format before adding.
                         if (applyFormatting)
                         {
-                            var includeDirectories = VSUtils.GetProjectIncludeDirectories(fileWindow.Document.ProjectItem?.ContainingProject);
-                            stringToInsert = Formatter.IncludeFormatter.FormatIncludes(stringToInsert, fileWindow.Document.FullName, includeDirectories, formatSettings);
+                            var systemIncludeDirectories = VSUtils.GetProjectIncludeDirectories(fileWindow.Document.ProjectItem?.ContainingProject, true, true);
+                            var includeDirectories = VSUtils.GetProjectIncludeDirectories(fileWindow.Document.ProjectItem?.ContainingProject, false, true);
+                            stringToInsert = Formatter.IncludeFormatter.FormatIncludes(
+                                stringToInsert,
+                                fileWindow.Document.FullName,
+                                systemIncludeDirectories,
+                                includeDirectories,
+                                formatSettings
+                            );
 
                             // Add a newline if we removed it.
                             if (formatSettings.RemoveEmptyLines)
